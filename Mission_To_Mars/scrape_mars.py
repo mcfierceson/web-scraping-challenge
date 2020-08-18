@@ -16,7 +16,7 @@ import time
 # In[175]:
 
 def init_browser():
-    executable_path = {"executable_path": "/usr/local/bin/chromedriver"}
+    executable_path = {"executable_path": "chromedriver"}
     return Browser("chrome", **executable_path, headless=False)
 
 
@@ -35,11 +35,11 @@ def scrape_info():
     html = browser.html
     soup = bs(html, 'html.parser')
 
+    time.sleep(2)
     article = soup.find('div', class_ = 'list_text')
     news_div = article.find('div', class_="content_title")
     news_title = news_div.find('a').text
     news_p = article.find('div', class_ = "article_teaser_body").text
-
 
     # In[7]:
 
@@ -130,7 +130,7 @@ def scrape_info():
     # In[189]:
 
 
-    results = soup.find_all('div', class_ = 'description')
+    results = hemi_soup.find_all('div', class_ = 'description')
 
 
     # In[201]:
@@ -151,7 +151,8 @@ def scrape_info():
                 image_html = browser.html
                 image_soup = bs(image_html, 'html.parser')
                 image_title = image_soup.find('h2', class_='title').text
-                full_link = "https://astrogeology.usgs.gov" + link
+                downloads = image_soup.find('div', class_='downloads')
+                full_link = downloads.a['href']
                 entry = {'title' : image_title, 'url' : full_link}
                 hemisphere_image_urls.append(entry)
         except AttributeError as e:
